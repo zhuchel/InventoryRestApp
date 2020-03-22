@@ -12,76 +12,40 @@ Prerequisites:
 
 ## Installation
 
+* Clone or download application <a href="https://github.com/zhuchel/InventoryRestApp.git">sources</a>
+from GitHub.
 
-When loading the dataset into R, please consider the following:
+* Install <b>MongoDB</b> Community Edition from 
+<a href="https://docs.mongodb.com/manual/installation/">https://docs.mongodb.com/manual/installation/</a> for your platform
 
-* The dataset has 2,075,259 rows and 9 columns. First
-calculate a rough estimate of how much memory the dataset will require
-in memory before reading into R. Make sure your computer has enough
-memory (most modern computers should be fine).
+* Alternately get <b>MongoDB</b> as Docker image <br>
+`docker pull mongo` <br>
+`docker run -d -p 27017-27019:27017-27019 --name mongodb mongo`
 
-* We will only be using data from the dates 2007-02-01 and
-2007-02-02. One alternative is to read the data from just those dates
-rather than reading in the entire dataset and subsetting to those
-dates.
+* Switch to <i>InventoryRestApp</i> folder and run <br>
+  `mvn clean install` <br>
+  This will compile sources and run intergation tests creating some test data.
 
-* You may find it useful to convert the Date and Time variables to
-Date/Time classes in R using the `strptime()` and `as.Date()`
-functions.
+* Run application with
+`mvn spring-boot:run`
 
-* Note that in this dataset missing values are coded as `?`.
+## Using Application
 
+* Open Swagger console
+`http://localhost:8080/swagger-ui.html` <br>
 
-## Making Plots
+![swagger-main-1](figures/swagger.png) 
 
-Our overall goal here is simply to examine how household energy usage
-varies over a 2-day period in February, 2007. Your task is to
-reconstruct the following plots below, all of which were constructed
-using the base plotting system.
+* Switch to <b>Product Entity</b>, POST ​/product saveProduct and create new Sample product
+with following JSON:
 
-First you will need to fork and clone the following GitHub repository:
-[https://github.com/rdpeng/ExData_Plotting1](https://github.com/rdpeng/ExData_Plotting1)
+![swagger-product-creation](figures/ProductCreation.png) 
 
+Verify response code 201.
 
-For each plot you should
+* Switch to <b>Product Entity</b>, /product findAllProduct and execute. <br>
+Verify existence of a product with SKU 555
 
-* Construct the plot and save it to a PNG file with a width of 480
-pixels and a height of 480 pixels.
+![swagger-products-get](figures/GetProducts.png) 
 
-* Name each of the plot files as `plot1.png`, `plot2.png`, etc.
-
-* Create a separate R code file (`plot1.R`, `plot2.R`, etc.) that
-constructs the corresponding plot, i.e. code in `plot1.R` constructs
-the `plot1.png` plot. Your code file **should include code for reading
-the data** so that the plot can be fully reproduced. You should also
-include the code that creates the PNG file.
-
-* Add the PNG file and R code file to your git repository
-
-When you are finished with the assignment, push your git repository to
-GitHub so that the GitHub version of your repository is up to
-date. There should be four PNG files and four R code files.
-
-
-The four plots that you will need to construct are shown below. 
-
-
-### Plot 1
-
-
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
-
-
-### Plot 2
-
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
-
-
-### Plot 3
-
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4.png) 
-
-
-### Plot 4
-
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5.png) 
+* Using Swagger UI you can play with other REST interfaces of the application.
