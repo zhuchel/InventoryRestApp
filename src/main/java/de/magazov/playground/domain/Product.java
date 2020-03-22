@@ -8,6 +8,12 @@ import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * Domain object for products.
+ *
+ * @author oleg magazov
+ *
+ */
 public class Product {
 
     @Id

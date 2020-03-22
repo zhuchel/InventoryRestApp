@@ -11,6 +11,12 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Implementation of {@link MongoRepository} for {@link Order}.
+ *
+ * @author oleg magazov
+ *
+ */
 @Api(tags = "Order Entity")
 @RepositoryRestResource(collectionResourceRel = "order", path = "order")
 public interface OrderRepository extends MongoRepository<Order, String> {

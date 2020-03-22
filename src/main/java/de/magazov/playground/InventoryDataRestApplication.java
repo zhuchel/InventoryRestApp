@@ -12,6 +12,12 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import springfox.documentation.spring.data.rest.configuration.SpringDataRestConfiguration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
+/**
+ * Application configuration and starter.
+ *
+ * @author oleg magazov
+ *
+ */
 @Configuration
 @SpringBootApplication
 @EnableSwagger2WebMvc

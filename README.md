@@ -18,7 +18,7 @@ from GitHub.
 * Install <b>MongoDB</b> Community Edition from 
 <a href="https://docs.mongodb.com/manual/installation/">https://docs.mongodb.com/manual/installation/</a> for your platform
 
-* Alternately get <b>MongoDB</b> as Docker image <br>
+* Alternatively get <b>MongoDB</b> as Docker image <br>
 `docker pull mongo` <br>
 `docker run -d -p 27017-27019:27017-27019 --name mongodb mongo`
 
@@ -36,7 +36,7 @@ from GitHub.
 
 ![swagger-main-1](figures/swagger.png) 
 
-* Switch to <b>Product Entity</b>, POST ​/product saveProduct and create new Sample product
+* Switch to <b>Product Entity</b>, POST ​/product saveProduct and create new sample product
 with following JSON:
 
 ![swagger-product-creation](figures/ProductCreation.png) 

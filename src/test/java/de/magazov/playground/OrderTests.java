@@ -1,6 +1,5 @@
 package de.magazov.playground;
 
-import de.magazov.playground.InventoryDataRestApplication;
 import de.magazov.playground.repository.OrderRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +15,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -25,6 +25,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = InventoryDataRestApplication.class)
 public class OrderTests {
 
+    private static final String ORDER_ROOT = "/order";
+    private static final String DATE_FORMAT  = "MM/dd/yyyy";
+    private static final String LOCATION  = "Location";
+
+    private static final String ID = "\"id\": \"444\"";
+    private static final String BUYER_MAIL  = "\"buyerMail\": \"ewreg@dfgbd.de\"";
+    private static final String PRICE  =  "\"price\": \"99.99\"";
+    private static final String NAME1  = "\"name\": \"hhh\"";
+    private static final String NAME2 = "\"name\": \"hhh1\"";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -32,7 +42,7 @@ public class OrderTests {
     private OrderRepository orderRepository;
 
     @BeforeEach
-    public void deleteAllBeforeTests() throws Exception {
+    public void deleteAllBeforeTests()  {
         orderRepository.deleteAll();
     }
 
@@ -46,37 +56,37 @@ public class OrderTests {
     @Test
     public void shouldCreateEntity() throws Exception {
 
-        mockMvc.perform(post("/order").content(
-                "{\"id\": \"444\", \"products\": [{  \"name\": \"hhh\",\n" +
-                        "      \"price\": \"99.99\"}, {  \"name\": \"hhh1\", \n" +
-                        "\"price\": \"99.99\"}], \"buyerMail\": \"ewreg@dfgbd.de\"}")).andExpect(
+        mockMvc.perform(post(ORDER_ROOT).content(
+                "{" + ID + ", \"products\": [{ " +  NAME1 + ",\n" +
+                            PRICE + "}, { " + NAME2 + ", \n" +
+                        PRICE + "}]," + BUYER_MAIL + "}")).andExpect(
                 status().isCreated()).andExpect(
-                header().string("Location", containsString("order/")));
+                header().string(LOCATION, containsString(ORDER_ROOT)));
     }
 
     @Test
-    public void shouldThrowValidationExceptionOnCreateEntity() throws Exception {
+    public void shouldThrowValidationExceptionOnCreateEntity() {
 
         Assertions.assertThrows(NestedServletException.class, () -> {
-            mockMvc.perform(post("/order").content(
-                    "{\"id\": \"444\", \"buyerMail\": \"ewreg@dfgbd.de\"}")).andExpect(
+            mockMvc.perform(post(ORDER_ROOT).content(
+                    "{" + ID + ", " + BUYER_MAIL + "}")).andExpect(
                     status().isCreated()).andExpect(
-                    header().string("Location", containsString("product/")));
+                    header().string(LOCATION, containsString(ORDER_ROOT)));
         });
     }
 
     @Test
     public void shouldQueryEntity() throws Exception {
 
-        mockMvc.perform(post("/order").content(
-                "{\"id\": \"444\", \"products\": [{  \"name\": \"hhh\",\n" +
-                        "      \"price\": \"99.99\"}, {  \"name\": \"hhh1\", \n" +
-                        "\"price\": \"99.99\"}], \"buyerMail\": \"ewreg@dfgbd.de\"}")).andExpect(
+        mockMvc.perform(post(ORDER_ROOT).content(
+                "{" + ID + ", \"products\": [{" +  NAME1 + ",\n" +
+                              PRICE +"}, { " + NAME2 + ", \n" +
+                        PRICE + "}]," +  BUYER_MAIL + "}")).andExpect(
                 status().isCreated()).andExpect(
-                header().string("Location", containsString("order/")));
+                header().string(LOCATION, containsString(ORDER_ROOT)));
 
-        String from = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-        String to = LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        String from = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+        String to = LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern(DATE_FORMAT));
 
         mockMvc.perform(
                 get("/order/search/findByTimeRange?from={from}&to={to}",

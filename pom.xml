@@ -81,5 +81,4 @@
 			<url>http://oss.jfrog.org/artifactory/oss-snapshot-local/</url>
 		</repository>
 	</repositories>
-
 </project>

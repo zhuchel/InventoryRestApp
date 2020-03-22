@@ -10,6 +10,12 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Domain object for orders.
+ *
+ * @author oleg magazov
+ *
+ */
 public class Order implements Persistable<String> {
 
 	@Id

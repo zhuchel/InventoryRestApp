@@ -1,7 +1,6 @@
 package de.magazov.playground;
 
 
-import de.magazov.playground.InventoryDataRestApplication;
 import de.magazov.playground.repository.ProductRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +23,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = InventoryDataRestApplication.class)
 public class ProductTests {
 
+	private static final String PRODUCT_ROOT = "/product";
+	private static final String LOCATION  = "Location";
+
+	private static final String SKU = "\"sku\": \"HREN\"";
+	private static final String NAME = "\"name\": \"toilet paper\"";
+	private static final String PRICE = "\"price\":\"10.99\"";
+
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -31,7 +37,7 @@ public class ProductTests {
 	private ProductRepository productRepository;
 
 	@BeforeEach
-	public void deleteAllBeforeTests() throws Exception {
+	public void deleteAllBeforeTests() {
 		productRepository.deleteAll();
 	}
 
@@ -45,31 +51,31 @@ public class ProductTests {
 	@Test
 	public void shouldCreateEntity() throws Exception {
 
-		mockMvc.perform(post("/product").content(
-				"{\"sku\": \"HREN\", \"name\": \"toilet paper\", \"price\":\"10.99\"}")).andExpect(
+		mockMvc.perform(post(PRODUCT_ROOT).content(
+				"{" + SKU + ", " + NAME + ", " + PRICE + "}")).andExpect(
 						status().isCreated()).andExpect(
-								header().string("Location", containsString("product/")));
+								header().string(LOCATION, containsString(PRODUCT_ROOT)));
 	}
 
 	@Test
-	public void shouldThrowValidationExceptionOnCreateEntity() throws Exception {
+	public void shouldThrowValidationExceptionOnCreateEntity()  {
 
 		Assertions.assertThrows(NestedServletException.class, () -> {
-			mockMvc.perform(post("/product").content(
-					"{\"sku\": \"HREN\"}")).andExpect(
+			mockMvc.perform(post(PRODUCT_ROOT).content(
+					"{" + SKU+ "}")).andExpect(
 					status().isCreated()).andExpect(
-					header().string("Location", containsString("product/")));
+					header().string(LOCATION, containsString(PRODUCT_ROOT)));
 		});
 	}
 
 	@Test
 	public void shouldRetrieveEntity() throws Exception {
 
-		MvcResult mvcResult = mockMvc.perform(post("/product").content(
-				"{\"sku\": \"HREN\", \"name\": \"toilet paper\", \"price\":\"10.99\"}")).andExpect(
+		MvcResult mvcResult = mockMvc.perform(post(PRODUCT_ROOT).content(
+				"{" + SKU + ", " + NAME + "," +  PRICE + "}")).andExpect(
 						status().isCreated()).andReturn();
 
-		String location = mvcResult.getResponse().getHeader("Location");
+		String location = mvcResult.getResponse().getHeader(LOCATION);
 		mockMvc.perform(get(location)).andExpect(status().isOk()).andExpect(
 				jsonPath("$.name").value("toilet paper")).andExpect(
 						jsonPath("$.price").value("10.99"));
@@ -78,14 +84,14 @@ public class ProductTests {
 	@Test
 	public void shouldUpdateEntity() throws Exception {
 
-		MvcResult mvcResult = mockMvc.perform(post("/product").content(
-				"{\"sku\": \"HREN1\", \"name\": \"init\",  \"price\":\"0.99\"}\"}")).andExpect(
+		MvcResult mvcResult = mockMvc.perform(post(PRODUCT_ROOT).content(
+				"{" + SKU + ", " + NAME + ",  \"price\":\"0.99\"}\"}")).andExpect(
 						status().isCreated()).andReturn();
 
-		String location = mvcResult.getResponse().getHeader("Location");
+		String location = mvcResult.getResponse().getHeader(LOCATION);
 
-		mockMvc.perform(put("/product/HREN1").content(
-				"{\"name\": \"fff\",  \"price\":\"10.99\"}")).andExpect(
+		mockMvc.perform(put("/product/HREN").content(
+				"{\"name\": \"fff\"," +  PRICE + "}")).andExpect(
 						status().isNoContent());
 
 		mockMvc.perform(get(location)).andExpect(status().isOk()).andExpect(
@@ -96,11 +102,11 @@ public class ProductTests {
 	@Test
 	public void shouldDeleteEntity() throws Exception {
 
-		MvcResult mvcResult = mockMvc.perform(post("/product").content(
-				"{ \"sku\": \"ggg\", \"name\":\"jjj\",  \"price\":\"10.99\"}")).andExpect(
+		MvcResult mvcResult = mockMvc.perform(post(PRODUCT_ROOT).content(
+				"{" + SKU + ", " + NAME + ", " + PRICE + "}")).andExpect(
 						status().isCreated()).andReturn();
 
-		String location = mvcResult.getResponse().getHeader("Location");
+		String location = mvcResult.getResponse().getHeader(LOCATION);
 		mockMvc.perform(delete(location)).andExpect(status().isNoContent());
 
 		mockMvc.perform(get(location)).andExpect(status().isNotFound());
